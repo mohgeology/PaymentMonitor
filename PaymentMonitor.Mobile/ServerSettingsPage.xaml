@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PaymentMonitor.Mobile.ServerSettingsPage"
+             Title="إعدادات السيرفر"
+             BackgroundColor="#123B7A">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="20">
+
+            <Label Text="⚙ إعدادات السيرفر"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   TextColor="White"
+                   HorizontalOptions="Center" />
+
+            <Border Background="#FFFFFF"
+                    StrokeShape="RoundRectangle 12"
+                    StrokeThickness="0"
+                    Padding="16">
+                <VerticalStackLayout Spacing="12">
+
+                    <Label Text="عنوان السيرفر (Base URL)"
+                           FontSize="14"
+                           TextColor="#123B7A" />
+
+                    <Entry x:Name="ServerUrlEntry"
+                           Placeholder="https://example.com/api"
+                           TextColor="#123B7A"
+                           PlaceholderColor="#9E9E9E" />
+
+                    <Label Text="مفتاح الـ API (اختياري)"
+                           FontSize="14"
+                           TextColor="#123B7A" />
+
+                    <Entry x:Name="ApiKeyEntry"
+                           Placeholder="API Key"
+                           IsPassword="True"
+                           TextColor="#123B7A"
+                           PlaceholderColor="#9E9E9E" />
+
+                </VerticalStackLayout>
+            </Border>
+
+            <Button x:Name="SaveButton"
+                    Text="💾 حفظ الإعدادات"
+                    Clicked="OnSaveClicked"
+                    BackgroundColor="#F07C22"
+                    TextColor="White"
+                    HeightRequest="50"
+                    CornerRadius="10" />
+
+            <Button x:Name="TestButton"
+                    Text="🔌 اختبار الاتصال"
+                    Clicked="OnTestClicked"
+                    BackgroundColor="#FFFFFF"
+                    TextColor="#123B7A"
+                    HeightRequest="50"
+                    CornerRadius="10" />
+
+            <Label x:Name="StatusLabel"
+                   Text=""
+                   FontSize="14"
+                   TextColor="White"
+                   HorizontalOptions="Center" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
+

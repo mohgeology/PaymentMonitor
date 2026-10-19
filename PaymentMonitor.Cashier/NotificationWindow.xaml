@@ -1,0 +1,113 @@
+﻿<Window x:Class="PaymentMonitor.Cashier.NotificationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="عملية جديدة"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Topmost="True"
+        ShowInTaskbar="False"
+        Width="420" Height="300"
+        WindowStartupLocation="Manual"
+        ShowActivated="False">
+
+    <Border Background="White" CornerRadius="16" BorderBrush="#F07C22" BorderThickness="2">
+        <Border.Effect>
+            <DropShadowEffect Color="Black" BlurRadius="20" ShadowDepth="4" Opacity="0.35"/>
+        </Border.Effect>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <Border Grid.Row="0" Background="#F07C22" CornerRadius="14,14,0,0" Padding="16,12">
+                <Grid>
+                    <TextBlock x:Name="HeaderText" Text="💰 عملية جديدة!"
+                               FontSize="18" FontWeight="Bold" Foreground="White"
+                               VerticalAlignment="Center"/>
+                    <TextBlock x:Name="TimerText" Text="10" FontSize="14" Foreground="White"
+                               HorizontalAlignment="Right" VerticalAlignment="Center"
+                               FontWeight="SemiBold"/>
+                </Grid>
+            </Border>
+
+            <!-- Body -->
+            <StackPanel Grid.Row="1" Margin="20,16,20,8">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="المحفظة:" FontWeight="Bold" Foreground="#666" Margin="0,0,8,6"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" x:Name="WalletText" Foreground="#123B7A" FontWeight="SemiBold" Margin="0,0,0,6"/>
+
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="النوع:" FontWeight="Bold" Foreground="#666" Margin="0,0,8,6"/>
+                    <TextBlock Grid.Row="1" Grid.Column="1" x:Name="TypeText" Foreground="#123B7A" Margin="0,0,0,6"/>
+
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="المبلغ:" FontWeight="Bold" Foreground="#666" Margin="0,0,8,6"/>
+                    <TextBlock Grid.Row="2" Grid.Column="1" x:Name="AmountText" Foreground="#F07C22" FontSize="20" FontWeight="Bold" Margin="0,0,0,6"/>
+
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="المرسل:" FontWeight="Bold" Foreground="#666" Margin="0,0,8,6"/>
+                    <TextBlock Grid.Row="3" Grid.Column="1" x:Name="SenderText" Foreground="#123B7A" Margin="0,0,0,6"/>
+
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="المرجع:" FontWeight="Bold" Foreground="#666" Margin="0,0,8,0"/>
+                    <TextBlock Grid.Row="4" Grid.Column="1" x:Name="ReferenceText" Foreground="#123B7A" FontFamily="Consolas"/>
+                </Grid>
+
+                <TextBlock x:Name="StatusText" Text="" Foreground="#c62828" FontSize="12"
+                           Margin="0,10,0,0" TextWrapping="Wrap"/>
+            </StackPanel>
+
+            <!-- Progress Bar -->
+            <Border Grid.Row="2" Height="6" Background="#eee" Margin="20,0,20,12" CornerRadius="3">
+                <Border x:Name="ProgressFill" HorizontalAlignment="Left" Width="380"
+                        Background="#F07C22" CornerRadius="3"/>
+            </Border>
+
+            <!-- Buttons -->
+            <Grid Grid.Row="3" Margin="20,0,20,16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0" x:Name="ClaimButton" Content="✅ يخصني"
+                        Background="#4CAF50" Foreground="White"
+                        FontSize="15" FontWeight="Bold" Padding="12"
+                        BorderThickness="0" Cursor="Hand" Click="ClaimButton_Click">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="10"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+
+                <Button Grid.Column="2" x:Name="DismissButton" Content="❌ لا يخصني"
+                        Background="#9E9E9E" Foreground="White"
+                        FontSize="15" FontWeight="Bold" Padding="12"
+                        BorderThickness="0" Cursor="Hand" Click="DismissButton_Click">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="10"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

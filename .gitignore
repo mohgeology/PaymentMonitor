@@ -1,0 +1,26 @@
+# Binaries & Build outputs
+bin/
+obj/
+dist/
+build/
+*.exe
+*.dll
+*.pdb
+*.apk
+*.aab
+
+# Python
+__pycache__/
+*.pyc
+
+# Databases & Backups
+*.db
+*.sqlite
+*.bak-*
+*.backup*
+_backups/
+
+# OS & IDE
+.vs/
+*.user
+*.suo

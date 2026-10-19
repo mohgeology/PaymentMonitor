@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PaymentMonitor.Mobile.MainPage"
+             xmlns:viewmodels="clr-namespace:PaymentMonitor.Mobile.ViewModels"
+             xmlns:models="clr-namespace:PaymentMonitor.Mobile.Models"
+             x:DataType="viewmodels:MainViewModel"
+             FlowDirection="RightToLeft"
+             Title="PaymentMonitor">
+
+    <ScrollView>
+        <ScrollView.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#123B7A" Offset="0.00" />
+                <GradientStop Color="#1B4F9C" Offset="0.45" />
+                <GradientStop Color="#FFFFFF" Offset="0.72" />
+                <GradientStop Color="#F07C22" Offset="1.00" />
+            </LinearGradientBrush>
+        </ScrollView.Background>
+        <VerticalStackLayout Padding="16" Spacing="14">
+
+            <!-- Header: compact -->
+            <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto" Padding="4">
+                <VerticalStackLayout Grid.Column="0" Spacing="2">
+                    <Label Text="{Binding AppTitle}" FontSize="20" FontAttributes="Bold" TextColor="White" HorizontalOptions="Start" />
+                    <Label Text="{Binding Subtitle}" FontSize="13" TextColor="#B0B0B0" HorizontalOptions="Start" />
+                </VerticalStackLayout>
+
+                <!-- Overall status indicator -->
+                <HorizontalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center">
+                    <Border WidthRequest="12" HeightRequest="12" StrokeShape="RoundRectangle 6" Background="#4CAF50" Padding="0" />
+                    <Label Text="{Binding OverallStatus}" TextColor="#E0E0E0" VerticalTextAlignment="Center" />
+                </HorizontalStackLayout>
+            </Grid>
+
+            <!-- SMS permission status -->
+            <Label Text="{Binding SmsPermissionStatus, StringFormat='صلاحية SMS: {0}'}" TextColor="#FFD54F" HorizontalOptions="Start" />
+
+            <!-- Main content: single-column mobile-friendly layout -->
+            <VerticalStackLayout Spacing="12">
+
+                <!-- Gateway Status Card -->
+                <Border Background="#1E1E1E" StrokeShape="RoundRectangle 10" Stroke="#333333" StrokeThickness="1" Padding="12">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="حالة البوابة" FontAttributes="Bold" FontSize="16" TextColor="White" />
+
+                        <Grid RowDefinitions="Auto, Auto, Auto, Auto" ColumnDefinitions="*, Auto" RowSpacing="10">
+                            <!-- Row 0 -->
+                            <HorizontalStackLayout Grid.Row="0" Grid.Column="0" Spacing="8" VerticalOptions="Center">
+                                <Label Text="استقبال SMS" TextColor="#D0D0D0" />
+                                <Label Text="{Binding SmsGatewayStatus}" TextColor="#E0E0E0" HorizontalOptions="Fill" HorizontalTextAlignment="Start" />
+                            </HorizontalStackLayout>
+                            <Border Grid.Row="0" Grid.Column="1" WidthRequest="12" HeightRequest="12" StrokeShape="RoundRectangle 6" Background="{Binding SmsGatewayColor, Converter={StaticResource StringToColorConverter}}" Padding="0" />
+
+                            <!-- Row 1 -->
+                            <HorizontalStackLayout Grid.Row="1" Grid.Column="0" Spacing="8" VerticalOptions="Center">
+                                <Label Text="الخادم" TextColor="#D0D0D0" />
+                                <Label Text="{Binding ServerStatus}" TextColor="#E0E0E0" HorizontalOptions="Fill" HorizontalTextAlignment="Start" />
+                            </HorizontalStackLayout>
+                            <Border Grid.Row="1" Grid.Column="1" WidthRequest="12" HeightRequest="12" StrokeShape="RoundRectangle 6" Background="{Binding ServerStatusColor, Converter={StaticResource StringToColorConverter}}" Padding="0" />
+
+                            <!-- Row 2 -->
+                            <HorizontalStackLayout Grid.Row="2" Grid.Column="0" Spacing="8" VerticalOptions="Center">
+                                <Label Text="المزامنة" TextColor="#D0D0D0" />
+                                <Label Text="{Binding SyncStatus}" TextColor="#E0E0E0" HorizontalOptions="Fill" HorizontalTextAlignment="Start" />
+                            </HorizontalStackLayout>
+                            <Border Grid.Row="2" Grid.Column="1" WidthRequest="12" HeightRequest="12" StrokeShape="RoundRectangle 6" Background="{Binding SyncStatusColor, Converter={StaticResource StringToColorConverter}}" Padding="0" />
+
+                            <!-- Row 3: Pending Count -->
+                            <Label Grid.Row="3" Grid.ColumnSpan="2"
+                                   Text="{Binding PendingCountDisplay}"
+                                   TextColor="#B0B0B0"
+                                   FontSize="13" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Button Text="🔄 مزامنة الآن"
+                    Clicked="OnSyncClicked"
+                    BackgroundColor="#F07C22"
+                    TextColor="White"
+                    HeightRequest="50"
+                    CornerRadius="10" />
+
+            <Button Text="⚙ إعدادات السيرفر"
+                    Clicked="OnServerSettingsClicked"
+                    BackgroundColor="#263238"
+                    TextColor="White"
+                    HeightRequest="50"
+                    CornerRadius="10" />
+
+            <!-- Latest Operation Card -->
+                <Border Background="#1E1E1E" StrokeShape="RoundRectangle 10" StrokeThickness="0" Padding="12">
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="آخر عملية" FontAttributes="Bold" FontSize="16" TextColor="White" />
+                        <Label Text="{Binding LatestOperation}" TextColor="#E0E0E0" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Latest received SMS (test area) -->
+                <Border Background="#1E1E1E" StrokeShape="RoundRectangle 10" Stroke="#333333" StrokeThickness="1" Padding="12">
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="آخر رسالة مستلمة" FontAttributes="Bold" FontSize="16" TextColor="White" />
+                        <Label Text="{Binding LatestSmsSender, StringFormat='مرسل: {0}'}" TextColor="#E0E0E0" />
+                        <Label Text="{Binding LatestSmsTime, StringFormat='الوقت: {0}'}" TextColor="#E0E0E0" />
+                        <Label Text="{Binding LatestSmsBody}" TextColor="#E0E0E0" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Contact Info Card -->
+                <Border Background="#1E1E1E" StrokeShape="RoundRectangle 10" Stroke="#333333" StrokeThickness="1" Padding="12">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="معلومات الاتصال" FontAttributes="Bold" FontSize="16" TextColor="White" />
+
+                        <Grid RowDefinitions="Auto, Auto, Auto, Auto" ColumnDefinitions="Auto, *" RowSpacing="8">
+                            <Label Grid.Row="0" Grid.Column="0" Text="عنوان IP" TextColor="#D0D0D0" />
+                            <Label Grid.Row="0" Grid.Column="1" Text="{Binding ContactIp}" TextColor="#E0E0E0" HorizontalOptions="Fill" HorizontalTextAlignment="Start" />
+
+                            <Label Grid.Row="1" Grid.Column="0" Text="الخادم" TextColor="#D0D0D0" />
+                            <Label Grid.Row="1" Grid.Column="1" Text="{Binding ContactServer}" TextColor="#E0E0E0" HorizontalOptions="Fill" HorizontalTextAlignment="Start" />
+
+                            <Label Grid.Row="2" Grid.Column="0" Text="البطارية" TextColor="#D0D0D0" />
+                            <Label Grid.Row="2" Grid.Column="1" Text="{Binding Battery}" TextColor="#E0E0E0" HorizontalOptions="Fill" HorizontalTextAlignment="Start" />
+
+                            <Label Grid.Row="3" Grid.Column="0" Text="الشاحن" TextColor="#D0D0D0" />
+                            <Label Grid.Row="3" Grid.Column="1" Text="{Binding Charger}" TextColor="#E0E0E0" HorizontalOptions="Fill" HorizontalTextAlignment="Start" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- فحص الرسائل السابقة (Historical SMS Scan Card) -->
+                <Border Background="#1E1E1E" StrokeShape="RoundRectangle 10" Stroke="#333333" StrokeThickness="1" Padding="12">
+                    <VerticalStackLayout Spacing="12">
+                        <Label Text="فحص الرسائل السابقة" FontAttributes="Bold" FontSize="16" TextColor="White" />
+
+                        <!-- Time Range Picker -->
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="النطاق الزمني:" TextColor="#D0D0D0" FontSize="13" />
+                            <Border Background="#2A2A2A" StrokeShape="RoundRectangle 6" Stroke="#444444" StrokeThickness="1" Padding="8,2">
+                                <Picker ItemsSource="{Binding TimeRangeOptions}"
+                                        SelectedItem="{Binding SelectedTimeRange}"
+                                        TextColor="White"
+                                        Title="اختر النطاق الزمني"
+                                        TitleColor="#888888" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <!-- Custom Date/Time pickers (visible only when 'تحديد الفترة' is selected) -->
+                        <VerticalStackLayout Spacing="8" IsVisible="{Binding IsCustomRangeSelected}">
+                            <Grid ColumnDefinitions="*, *" ColumnSpacing="8">
+                                <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                    <Label Text="تاريخ البداية" TextColor="#B0B0B0" FontSize="12" />
+                                    <DatePicker Date="{Binding CustomStartDate}" TextColor="White" BackgroundColor="#2A2A2A" />
+                                </VerticalStackLayout>
+                                <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                    <Label Text="وقت البداية" TextColor="#B0B0B0" FontSize="12" />
+                                    <TimePicker Time="{Binding CustomStartTime}" TextColor="White" BackgroundColor="#2A2A2A" />
+                                </VerticalStackLayout>
+                            </Grid>
+                            <Grid ColumnDefinitions="*, *" ColumnSpacing="8">
+                                <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                    <Label Text="تاريخ النهاية" TextColor="#B0B0B0" FontSize="12" />
+                                    <DatePicker Date="{Binding CustomEndDate}" TextColor="White" BackgroundColor="#2A2A2A" />
+                                </VerticalStackLayout>
+                                <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                    <Label Text="وقت النهاية" TextColor="#B0B0B0" FontSize="12" />
+                                    <TimePicker Time="{Binding CustomEndTime}" TextColor="White" BackgroundColor="#2A2A2A" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </VerticalStackLayout>
+
+                        <!-- Scan Button -->
+                        <Button Text="بدء فحص الرسائل"
+                                Command="{Binding ScanHistoricalSmsCommand}"
+                                BackgroundColor="#2E7D32"
+                                TextColor="White"
+                                FontAttributes="Bold"
+                                CornerRadius="8"
+                                HeightRequest="44" />
+
+                        <!-- Loading Indicator -->
+                        <ActivityIndicator IsRunning="{Binding IsScanning}"
+                                           IsVisible="{Binding IsScanning}"
+                                           Color="#4CAF50"
+                                           HeightRequest="30" />
+
+                        <!-- Status message -->
+                        <Label Text="{Binding ScanStatusMessage}"
+                               TextColor="#FFD54F"
+                               FontSize="12" />
+
+                        <!-- Scan Statistics Summary -->
+                        <Border Background="#252525" StrokeShape="RoundRectangle 8" Stroke="#444444" StrokeThickness="1" Padding="10" IsVisible="{Binding HasScanResults}">
+                            <Grid ColumnDefinitions="*, *, *" RowDefinitions="Auto, Auto">
+                                <Label Grid.Row="0" Grid.Column="0" Text="تم فحصها" TextColor="#B0B0B0" FontSize="11" HorizontalTextAlignment="Center" />
+                                <Label Grid.Row="1" Grid.Column="0" Text="{Binding TotalScannedCount}" TextColor="White" FontSize="16" FontAttributes="Bold" HorizontalTextAlignment="Center" />
+
+                                <Label Grid.Row="0" Grid.Column="1" Text="عمليات المحافظ" TextColor="#81C784" FontSize="11" HorizontalTextAlignment="Center" />
+                                <Label Grid.Row="1" Grid.Column="1" Text="{Binding RecognizedCount}" TextColor="#4CAF50" FontSize="16" FontAttributes="Bold" HorizontalTextAlignment="Center" />
+
+                                <Label Grid.Row="0" Grid.Column="2" Text="غير معروفة" TextColor="#E57373" FontSize="11" HorizontalTextAlignment="Center" />
+                                <Label Grid.Row="1" Grid.Column="2" Text="{Binding UnrecognizedCount}" TextColor="#EF5350" FontSize="16" FontAttributes="Bold" HorizontalTextAlignment="Center" />
+                            </Grid>
+                        </Border>
+
+                        <!-- Recognized Transactions List -->
+                        <VerticalStackLayout Spacing="8" IsVisible="{Binding HasScanResults}">
+                            <Label Text="العمليات المستخرجة (من الأحدث للأقدم):" FontAttributes="Bold" FontSize="14" TextColor="White" Margin="0,4,0,0" />
+
+                            <VerticalStackLayout BindableLayout.ItemsSource="{Binding ScannedOperations}" Spacing="10">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="models:ScannedSmsItem">
+                                        <Border Background="#242424" StrokeShape="RoundRectangle 8" Stroke="#3A3A3A" StrokeThickness="1" Padding="12">
+                                            <VerticalStackLayout Spacing="6">
+                                                <!-- Top row: Wallet, Transaction Type, Time -->
+                                                <Grid ColumnDefinitions="Auto, *, Auto">
+                                                    <Border Grid.Column="0" Background="#1B5E20" StrokeShape="RoundRectangle 4" Padding="6,2">
+                                                        <Label Text="{Binding WalletName}" TextColor="White" FontSize="12" FontAttributes="Bold" />
+                                                    </Border>
+                                                    <Label Grid.Column="1" Text="{Binding TransactionType}" TextColor="#E0E0E0" FontSize="13" Margin="8,0,0,0" VerticalOptions="Center" />
+                                                    <Label Grid.Column="2" Text="{Binding FormattedTime}" TextColor="#9E9E9E" FontSize="11" VerticalOptions="Center" />
+                                                </Grid>
+
+                                                <!-- Amount -->
+                                                <Label Text="{Binding FormattedAmount}" TextColor="#4CAF50" FontSize="18" FontAttributes="Bold" />
+
+                                                <!-- Details Grid -->
+                                                <Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto, Auto, Auto, Auto" RowSpacing="3">
+                                                    <Label Grid.Row="0" Grid.Column="0" Text="المرسل: " TextColor="#A0A0A0" FontSize="12" IsVisible="{Binding HasSenderName}" />
+                                                    <Label Grid.Row="0" Grid.Column="1" Text="{Binding SenderName}" TextColor="White" FontSize="12" IsVisible="{Binding HasSenderName}" />
+
+                                                    <Label Grid.Row="1" Grid.Column="0" Text="رقم المرسل: " TextColor="#A0A0A0" FontSize="12" IsVisible="{Binding HasSenderPhone}" />
+                                                    <Label Grid.Row="1" Grid.Column="1" Text="{Binding SenderPhone}" TextColor="White" FontSize="12" IsVisible="{Binding HasSenderPhone}" />
+
+                                                    <Label Grid.Row="2" Grid.Column="0" Text="رقم الحساب: " TextColor="#A0A0A0" FontSize="12" IsVisible="{Binding HasAccountNumber}" />
+                                                    <Label Grid.Row="2" Grid.Column="1" Text="{Binding AccountNumber}" TextColor="White" FontSize="12" IsVisible="{Binding HasAccountNumber}" />
+
+                                                    <Label Grid.Row="3" Grid.Column="0" Text="الرصيد: " TextColor="#A0A0A0" FontSize="12" IsVisible="{Binding HasBalance}" />
+                                                    <Label Grid.Row="3" Grid.Column="1" Text="{Binding FormattedBalance}" TextColor="#FFD54F" FontSize="12" IsVisible="{Binding HasBalance}" />
+                                                </Grid>
+
+                                                <!-- Original Message Toggle Button -->
+                                                <Button Text="{Binding ToggleOriginalButtonText}"
+                                                        Command="{Binding ToggleOriginalCommand}"
+                                                        BackgroundColor="Transparent"
+                                                        TextColor="#64B5F6"
+                                                        FontSize="11"
+                                                        Padding="0"
+                                                        HeightRequest="24"
+                                                        HorizontalOptions="Start" />
+
+                                                <!-- Original Message Content (shown on toggle) -->
+                                                <Border Background="#161616" Stroke="#2A2A2A" StrokeShape="RoundRectangle 6" Padding="8" IsVisible="{Binding ShowOriginalMessage}">
+                                                    <Label Text="{Binding OriginalMessage}" TextColor="#B0B0B0" FontSize="11" />
+                                                </Border>
+                                            </VerticalStackLayout>
+                                        </Border>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Last Messages (placeholder list area) -->
+                <Border Background="#1E1E1E" StrokeShape="RoundRectangle 10" StrokeThickness="0" Padding="12">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="آخر الرسائل" FontAttributes="Bold" FontSize="16" TextColor="White" />
+                        <Label Text="لا توجد رسائل مستلمة" TextColor="#E0E0E0" />
+                    </VerticalStackLayout>
+                </Border>
+
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
+
+
+
+
+
+
+
+
